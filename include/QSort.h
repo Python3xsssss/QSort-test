@@ -4,6 +4,26 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
+#include <string>
+
+using std::cout;
+using std::endl;
+using std::string;
+
+struct SOMETHING
+{
+	int value;
+	string whatever;
+
+	friend std::ostream& operator<<(std::ostream& ostr, const SOMETHING& op);
+};
+
+std::ostream& operator<<(std::ostream& ostr, const SOMETHING& op)
+{
+	ostr << op.whatever;
+	return ostr;
+}
 
 template <typename ValType>
 void Print(ValType* mas, int size)
@@ -41,25 +61,51 @@ void QuickSort(ValType* mas, int down, int up, int mode)
 }
 
 
-void CountSort(int* mas, int size)
+void CountSort(SOMETHING* mas, int size, size_t max)
 {
-	int tmp[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	int* out = new int[size];
+	int* tmp = new int[max + 1];
+	SOMETHING* out = new SOMETHING[size];
+	for (int i = 0; i < max + 1; i++)
+		tmp[i] = 0;
 
 	for (int i = 0; i < size; i++)
-		for (int j = mas[i]; j < 10; j++)
+		for (int j = mas[i].value; j < max + 1; j++)
 			tmp[j]++;
-	for (int i = 0; i < size; i++)
+
+	for (int i = size - 1; i >= 0; i--)
 	{
-		out[tmp[mas[i]] - 1] = mas[i];
-		tmp[mas[i]]--;
+		out[tmp[mas[i].value] - 1] = mas[i];
+		tmp[mas[i].value]--;
 	}
 		
 	for (int i = 0; i < size; i++)
 		mas[i] = out[i];
+	delete[] tmp;
 	delete[] out;
 }
 
-void
+
+void CountSort(int* mas, int size, size_t max)
+{
+	int* tmp = new int[max + 1];
+	int* out = new int[size];
+	for (int i = 0; i < max + 1; i++)
+		tmp[i] = 0;
+
+	for (int i = 0; i < size; i++)
+		for (int j = mas[i]; j < max + 1; j++)
+			tmp[j]++;
+
+	for (int i = size - 1; i >= 0; i--)
+	{
+		out[tmp[mas[i]] - 1] = mas[i];
+		tmp[mas[i]]--;
+	}
+
+	for (int i = 0; i < size; i++)
+		mas[i] = out[i];
+	delete[] tmp;
+	delete[] out;
+}
 
 #endif
